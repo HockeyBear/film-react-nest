@@ -9,10 +9,6 @@ export class OrderService {
   async orderPlace(orderData: createOrderDto): Promise<any> {
     const ticketsForPurchase = [];
 
-    console.log('orderData instanceof createOrderDto:', orderData instanceof createOrderDto);
-    console.log('orderData.orderData:', orderData.orderData);
-
-
     for (const order of orderData.orderData) {
       const sessionData = await this.filmDB.sessionData(
         order.filmId,
