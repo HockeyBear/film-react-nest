@@ -5,7 +5,7 @@ import { Model } from 'mongoose';
 import { Film } from 'src/films/schemas/films.schemas';
 import { FilmNotFindException } from 'src/exceptions/filmNotFind';
 
-export class FilmsRepository {
+export class FilmsRepositoryMongo {
   constructor(@Inject('FILM_DB') private filmModel: Model<Film>) {}
 
   private GetFilmsFn(): (FilmFromDatabase: Film) => FilmDto {
