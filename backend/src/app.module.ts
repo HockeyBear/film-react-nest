@@ -7,10 +7,14 @@ import {configProvider} from "./app.config.provider";
 import { FilmsController } from './films/films/films.controller';
 import { OrderController } from './order/order/order.controller';
 import { FilmsProvider } from './films/films/films.provider';
-import { FilmsRepository } from './repository/films.repository';
+import { FilmsRepositoryMongo } from './repository/films.Mongo.repository';
 import { FilmsService } from './films/films/films.service';
 import { OrderService } from './order/order/order.service';
 import { DBModule } from './db/db.module';
+import { FilmsRepositoryPostgres } from './repository/films.Postgresql.repository';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { Film } from './films/entities/film.entity';
+import { Schedule } from './films/entities/schedule.entity';
 
 @Module({
   imports: [
@@ -25,6 +29,6 @@ import { DBModule } from './db/db.module';
       DBModule,
   ],
   controllers: [FilmsController, OrderController],
-  providers: [configProvider, FilmsProvider, FilmsRepository, FilmsService, OrderService],
+  providers: [configProvider, FilmsProvider, FilmsRepositoryMongo, FilmsRepositoryPostgres, FilmsService, OrderService],
 })
 export class AppModule {}
