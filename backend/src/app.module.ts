@@ -15,6 +15,7 @@ import { FilmsRepositoryPostgres } from './repository/films.Postgresql.repositor
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Film } from './films/entities/film.entity';
 import { Schedule } from './films/entities/schedule.entity';
+import { DevLogger } from './devLogger/dev.logger';
 
 @Module({
   imports: [
@@ -29,6 +30,6 @@ import { Schedule } from './films/entities/schedule.entity';
       DBModule,
   ],
   controllers: [FilmsController, OrderController],
-  providers: [configProvider, FilmsProvider, FilmsRepositoryMongo, FilmsRepositoryPostgres, FilmsService, OrderService],
+  providers: [configProvider, FilmsProvider, FilmsRepositoryMongo, FilmsRepositoryPostgres, FilmsService, OrderService, DevLogger],
 })
 export class AppModule {}
