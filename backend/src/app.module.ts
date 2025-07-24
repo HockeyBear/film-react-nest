@@ -24,7 +24,7 @@ import { DevLogger } from './devLogger/dev.logger';
           cache: true
       }),
       ServeStaticModule.forRoot({
-        rootPath: path.join(__dirname, '..', 'public'),
+        rootPath: path.join(__dirname, '..', '..', 'public'),
         serveRoot: '/content/afisha'
       }),
       DBModule,
