@@ -14,55 +14,56 @@ export class OrderService {
     private readonly filmDbPostgre: FilmsRepositoryPostgres,
   ) {}
 
-  async orderPlace(orderData: createOrderDto): Promise<any> {
-    const ticketsForPurchase = [];
+  async orderPlace(orderData: createOrderDto) {
+  const ticketsForPurchase = [];
 
-    if (this.config.database.driver === 'mongodb') {
-      for (const order of orderData.orderData) {
-        const sessionData = await this.filmDbMongo.sessionData(
-          order.filmId,
-          order.sessionId,
-        );
-        if (sessionData.includes(order.seatsSelect)) {
-          throw new placeIsOccupied(order.seatsSelect);
-        }
-        ticketsForPurchase.push({
-          filmId: order.filmId,
-          sessionId: order.sessionId,
-          seatsSelect: order.seatsSelect,
-        });
-        if (ticketsForPurchase.length > 0) {
-          for (const ticket of ticketsForPurchase) {
-            const { filmId, sessionId, seatsSelect } = ticket;
-            await this.filmDbMongo.placeOrder(filmId, sessionId, seatsSelect);
-          }
-        }
+  if (this.config.database.driver === 'mongodb') {
+    for (const ticket of orderData.tickets) {
+      const sessionData = await this.filmDbMongo.sessionData(ticket.film, ticket.session);
+      const seatsSelect = `${ticket.row}:${ticket.seat}`;
+      if (sessionData.includes(seatsSelect)) {
+        throw new placeIsOccupied(seatsSelect);
       }
-    } else if (this.config.database.driver === 'postgres') {
-      for (const order of orderData.orderData) {
-        const sessionData = await this.filmDbPostgre.sessionData(
-          order.filmId,
-          order.sessionId,
-        );
-        if (sessionData.includes(order.seatsSelect)) {
-          throw new placeIsOccupied(order.seatsSelect);
-        }
-        ticketsForPurchase.push({
-          filmId: order.filmId,
-          sessionId: order.sessionId,
-          seatsSelect: order.seatsSelect,
-        });
-        if (ticketsForPurchase.length > 0) {
-          for (const ticket of ticketsForPurchase) {
-            const { filmId, sessionId, seatsSelect } = ticket;
-            await this.filmDbPostgre.placeOrder(filmId, sessionId, seatsSelect);
-          }
-        }
-      }
+      ticketsForPurchase.push({
+        film: ticket.film,
+        session: ticket.session,
+        daytime: ticket.daytime,
+        row: ticket.row,
+        seat: ticket.seat,
+        price: ticket.price,
+      });
     }
 
-    return {
-      items: ticketsForPurchase,
-    };
+    for (const ticket of ticketsForPurchase) {
+      await this.filmDbMongo.placeOrder(ticket.film, ticket.session, `${ticket.row}:${ticket.seat}`);
+    }
+
+  } else if (this.config.database.driver === 'postgres') {
+    for (const ticket of orderData.tickets) {
+      const sessionData = await this.filmDbPostgre.sessionData(ticket.film, ticket.session);
+      const seatsSelect = `${ticket.row}:${ticket.seat}`;
+      if (sessionData.includes(seatsSelect)) {
+        throw new placeIsOccupied(seatsSelect);
+      }
+      ticketsForPurchase.push({
+        film: ticket.film,
+        session: ticket.session,
+        daytime: ticket.daytime,
+        row: ticket.row,
+        seat: ticket.seat,
+        price: ticket.price,
+      });
+    }
+
+    for (const ticket of ticketsForPurchase) {
+      await this.filmDbPostgre.placeOrder(ticket.film, ticket.session, `${ticket.row}:${ticket.seat}`);
+    }
   }
+
+  return {
+    total: ticketsForPurchase.length,
+    items: ticketsForPurchase,
+  };
+}
+
 }

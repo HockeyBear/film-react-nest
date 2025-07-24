@@ -26,26 +26,26 @@ class ContactsDto {
   phone: string;
 }
 
-class PlaceTicketDto {
-  @IsString()
-  filmId: string;
-  @IsString()
-  sessionId: string;
-  @IsString()
-  seatsSelect: string;
-}
+// class PlaceTicketDto {
+//   @IsString()
+//   filmId: string;
+//   @IsString()
+//   sessionId: string;
+//   @IsString()
+//   seatsSelect: string;
+// }
 
 export class createOrderDto extends ContactsDto {
   tickets: TicketDto[];
-  public get orderData() {
-    const request: PlaceTicketDto[] = [];
-    this.tickets.forEach((ticket) => {
-      const order = {} as PlaceTicketDto;
-      order.filmId = ticket.film;
-      order.seatsSelect = `${ticket.row}:${ticket.seat}`;
-      order.sessionId = ticket.session;
-      request.push(order);
-    });
-    return request;
-  }
+  // public get orderData() {
+  //   const request: PlaceTicketDto[] = [];
+  //   this.tickets.forEach((ticket) => {
+  //     const order = {} as PlaceTicketDto;
+  //     order.filmId = ticket.film;
+  //     order.seatsSelect = `${ticket.row}:${ticket.seat}`;
+  //     order.sessionId = ticket.session;
+  //     request.push(order);
+  //   });
+  //   return request;
+  // }
 }
